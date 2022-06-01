@@ -1,5 +1,5 @@
 import React, {useContext, useRef, useState} from 'react';
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {gql, useMutation, useQuery} from "@apollo/client";
 import moment from "moment";
 
@@ -9,7 +9,9 @@ import {AuthContext} from "../context/auth-context";
 import Card from "../UI/Card";
 
 import ForumRoundedIcon from '@mui/icons-material/ForumRounded';
-import {Button, TextField, CardActions} from "@mui/material";
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
+import {Button, TextField, CardActions, CardContent, Typography, Avatar} from "@mui/material";
 
 import '../App.css'
 
@@ -50,20 +52,28 @@ const SinglePost = () => {
         postMarkup = <p>Loading post...</p>
     } else {
         const {id, body, createdAt, username, comments, commentCount} = getPost
+        const usernameAvatar = username.toString().charAt(0).toUpperCase()
         postMarkup = (
             <div className='single-page-container'>
-                <div className='single-page-left'>用户头像</div>
+                <div className='single-page-left'><Avatar sx={{width: 100, height: 100}}><h1>{usernameAvatar}</h1></Avatar></div>
                 <div className='single-page-right'>
                     <Card>
-                        {username}
-                        <br/>
-                        {createdAt}
-                        <br/>
-                        {body}
-                        <br/>
+                        <CardContent>
+                            <Typography variant="h5" component="div">
+                                <AccountCircleRoundedIcon/>&nbsp;{username}
+                            </Typography>
+                            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                <AccessTimeRoundedIcon size='small'/>&nbsp;{moment(createdAt).fromNow(true)}
+                            </Typography>
+                            <Typography variant="h4">
+                                {/*{`"${body}"`}*/}
+                                {body}
+                                <br />
+                            </Typography>
+                        </CardContent>
                         <CardActions>
                             <LikeButton user={user} post={getPost}/>
-                            <Button size="small" as={Link} to={`/post/${id}`}><ForumRoundedIcon/></Button>
+                            <Button size="small"><ForumRoundedIcon/></Button>
                             {commentCount}
                             {user && user.username === username && <DeleteButton postId={id} callback={deletePostCallback}/>}
                         </CardActions>
@@ -90,16 +100,24 @@ const SinglePost = () => {
                         <br/>
                     </form>)}
                     <div>
+                        {comments.length > 0 ? <h2>Comments:</h2> : <h2>Leave your comment!</h2>}
                         {comments && comments.map(comment => (
                             <Card key={comment.id}>
-                                {comment.username}
-                                <br/>
-                                {moment(comment.createdAt).fromNow(true)}
-                                <br/>
+                                <CardContent>
+                                    <Typography variant="h5" component="div">
+                                        <AccountCircleRoundedIcon/>&nbsp;{comment.username}&nbsp;
+                                    </Typography>
+                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                        <AccessTimeRoundedIcon size='small'/>&nbsp;{moment(comment.createdAt).fromNow(true)}
+                                    </Typography>
+                                    <Typography variant="h4">
+                                        {comment.body}
+                                        <br />
+                                    </Typography>
+                                </CardContent>
                                 {user && user.username === comment.username && (
                                     <DeleteButton postId={id} commentId={comment.id}/>
                                 )}
-                                {comment.body}
                             </Card>
                         ))}
                     </div>

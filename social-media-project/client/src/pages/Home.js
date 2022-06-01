@@ -14,7 +14,7 @@ const Home = () => {
 
     return (
         <>
-            <h1>Recent Posts</h1>
+            <h1>Recent Posts:</h1>
             {user && <PostForm/>}
             <div className='post-card-container'>
                 {loading
