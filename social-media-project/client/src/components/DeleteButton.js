@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {gql, useMutation} from "@apollo/client";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {Button, Modal, Typography, Box} from "@mui/material";
-import {FETCH_POST_QUERY, FETCH_POSTS_QUERY} from "../context/graphql";
+import {FETCH_POSTS_QUERY} from "../context/graphql";
 
 const style = {
     position: 'absolute',
@@ -49,17 +49,6 @@ const DeleteButton = ({postId, commentId, callback}) => {
                 if (callback) {
                     callback()
                 }
-            } else {
-                //todo: 删除评论功能
-                const data = proxy.readQuery({
-                    query: FETCH_POST_QUERY
-                })
-                proxy.writeQuery({
-                    query: FETCH_POST_QUERY,
-                    data: {
-                        getPost: data.getPost.comments.filter(c => c.id !== commentId)
-                    }
-                })
             }
         }
     })

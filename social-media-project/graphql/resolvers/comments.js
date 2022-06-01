@@ -28,18 +28,16 @@ module.exports = {
             } else throw new UserInputError('Post not found')
         },
         deleteComment: async (_, {postId, commentId}, context) => {
-            const {username} = context
+            const {username} = checkAuth(context)
 
             const post = await Post.findById(postId)
-            console.log(post)
 
             //安全性检查，前端user不匹配时可能不会有删除按钮
             if (post) {
                 const commentIndex = post.comments.findIndex(c => c.id === commentId)
-                console.log('删除前', post.comments)
                 if (post.comments[commentIndex].username === username) {
                     post.comments.splice(commentIndex, 1)
-                    console.log(post.comments)
+                    // post.comments.filter(c => c.id !== commentId)
                     await post.save()
                     return post
                 } else {
